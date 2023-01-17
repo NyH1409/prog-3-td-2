@@ -8,6 +8,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity(name = "player_score")
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 @Data
 @Builder
 @NoArgsConstructor
