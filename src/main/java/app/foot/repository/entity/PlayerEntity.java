@@ -13,9 +13,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @Data
 @EqualsAndHashCode
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class PlayerEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
