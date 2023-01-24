@@ -14,6 +14,8 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static utils.TestUtils.teamBarea;
+import static utils.TestUtils.teamGhana;
 
 @Slf4j
 public class MatchMapperTest {
@@ -99,17 +101,4 @@ public class MatchMapperTest {
                 .build();
     }
 
-    private static TeamEntity teamGhana() {
-        return TeamEntity.builder()
-                .id(2)
-                .name("Ghana")
-                .build();
-    }
-
-    private static TeamEntity teamBarea() {
-        return TeamEntity.builder()
-                .id(1)
-                .name("Barea")
-                .build();
-    }
 }

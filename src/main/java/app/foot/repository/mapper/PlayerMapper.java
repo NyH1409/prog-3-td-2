@@ -2,13 +2,10 @@ package app.foot.repository.mapper;
 
 import app.foot.model.Player;
 import app.foot.model.PlayerScorer;
-import app.foot.model.exception.BadRequestException;
 import app.foot.repository.MatchRepository;
 import app.foot.repository.PlayerRepository;
-import app.foot.repository.entity.MatchEntity;
 import app.foot.repository.entity.PlayerEntity;
 import app.foot.repository.entity.PlayerScoreEntity;
-import java.util.Optional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -36,22 +33,12 @@ public class PlayerMapper {
         .build();
   }
 
-    public PlayerScoreEntity toEntity(int matchId, PlayerScorer domain) {
-        Optional<MatchEntity> match = matchRepository.findById(matchId);
-        if (match.isPresent()) {
-            Optional<PlayerEntity> player =
-                playerRepository.findByIdAndNameAndGuardian(domain.getPlayer().getId(),
-                    domain.getPlayer().getName(), domain.getPlayer().getIsGuardian());
-            if (player.isPresent()) {
-                return PlayerScoreEntity.builder()
-                    .player(player.get())
-                    .minute(domain.getMinute())
-                    .ownGoal(domain.getIsOwnGoal())
-                    .match(match.get())
-                    .build();
-            }
-            throw new BadRequestException("Player not found");
-        }
-        throw new BadRequestException("Match not found");
-    }
+  public PlayerScoreEntity toEntity(int matchId, PlayerScorer domain) {
+    return PlayerScoreEntity.builder()
+        .player(playerRepository.findById(domain.getPlayer().getId()).get())
+        .minute(domain.getMinute())
+        .ownGoal(domain.getIsOwnGoal())
+        .match(matchRepository.findById(matchId).get())
+        .build();
+  }
 }

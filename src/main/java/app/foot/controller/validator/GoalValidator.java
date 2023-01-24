@@ -1,6 +1,7 @@
 package app.foot.controller.validator;
 
 import app.foot.controller.rest.PlayerScorer;
+import app.foot.model.exception.BadRequestException;
 import java.util.function.Consumer;
 import org.springframework.stereotype.Component;
 
@@ -13,7 +14,7 @@ public class GoalValidator implements Consumer<PlayerScorer> {
     if (playerScorer.getPlayer().getIsGuardian()) {
       exceptionBuilder.append("Player#")
           .append(playerScorer.getPlayer().getId())
-          .append(" is a guardian ").append("so they cannot score.");
+          .append(" is a guardian ").append("so he cannot score.");
     }
     if (playerScorer.getScoreTime() == null) {
       exceptionBuilder.append("Score minute is mandatory.");
@@ -29,7 +30,7 @@ public class GoalValidator implements Consumer<PlayerScorer> {
           .append(" cannot score before after minute 90.");
     }
     if (!exceptionBuilder.isEmpty()) {
-      throw new RuntimeException(exceptionBuilder.toString());
+      throw new BadRequestException(exceptionBuilder.toString());
     }
   }
 }
