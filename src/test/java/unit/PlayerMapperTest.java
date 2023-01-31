@@ -9,16 +9,22 @@ import app.foot.repository.entity.MatchEntity;
 import app.foot.repository.entity.PlayerEntity;
 import app.foot.repository.entity.PlayerScoreEntity;
 import app.foot.repository.mapper.PlayerMapper;
-import org.junit.jupiter.api.Test;
-
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static utils.TestUtils.*;
+import static utils.TestUtils.assertThrowsExceptionMessage;
+import static utils.TestUtils.playerEntityRakoto;
+import static utils.TestUtils.playerModelRakoto;
+import static utils.TestUtils.rakotoModelScorer;
+import static utils.TestUtils.scorerRakoto;
+import static utils.TestUtils.teamBarea;
+import static utils.TestUtils.teamGhana;
 
 public class PlayerMapperTest {
     public static final int MATCH_ID = 1;
@@ -54,13 +60,30 @@ public class PlayerMapperTest {
     }
 
     @Test
+    void player_to_entity_ok() {
+        when(teamRepositoryMock.findByName(any(String.class))).thenReturn(null);
+
+        PlayerEntity actual = subject.toEntity(null);
+
+        assertEquals(new PlayerEntity(), actual);
+    }
+
+    @Test
+    void player_to_entity_ko() {
+        when(teamRepositoryMock.findByName(any(String.class))).thenThrow(NotFoundException.class);
+
+        assertThrowsExceptionMessage("",
+            NotFoundException.class, () -> subject.toEntity());
+    }
+
+    @Test
     void player_scorer_to_domain_ok() {
         PlayerScorer actual = subject.toDomain(PlayerScoreEntity.builder()
-                .id(1)
-                .player(entityRakoto())
-                .minute(10)
-                .ownGoal(false)
-                .build());
+            .id(1)
+            .player(entityRakoto())
+            .minute(10)
+            .ownGoal(false)
+            .build());
 
         assertEquals(rakotoScorer(), actual);
     }

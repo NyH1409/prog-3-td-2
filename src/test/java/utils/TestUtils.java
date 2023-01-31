@@ -6,41 +6,63 @@ import app.foot.model.Team;
 import app.foot.repository.entity.PlayerEntity;
 import app.foot.repository.entity.PlayerScoreEntity;
 import app.foot.repository.entity.TeamEntity;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.UnsupportedEncodingException;
 import org.junit.jupiter.api.function.Executable;
+import org.springframework.mock.web.MockHttpServletResponse;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class TestUtils {
+    public static final int MATCH3_ID = 3;
 
     public static PlayerScorer scorer1() {
         return PlayerScorer.builder()
-                .player(player1())
-                .isOG(false)
-                .scoreTime(10)
-                .build();
+            .player(player1())
+            .isOG(false)
+            .scoreTime(10)
+            .build();
+    }
+
+    public static PlayerScorer goalKeeper() {
+        return PlayerScorer.builder()
+            .player(guardian())
+            .isOG(false)
+            .scoreTime(10)
+            .build();
     }
 
     public static PlayerScorer nullScoreTimeScorer() {
         return scorer1().toBuilder()
-                .scoreTime(null)
-                .build();
+            .scoreTime(null)
+            .build();
     }
 
     public static Player player1() {
         return Player.builder()
-                .id(1)
-                .name("Rakoto")
-                .isGuardian(false)
-                .build();
+            .id(1)
+            .name("Rakoto")
+            .isGuardian(false)
+            .build();
     }
 
-    public static app.foot.model.PlayerScorer rakotoModelScorer(app.foot.model.Player playerModelRakoto, PlayerScoreEntity scorerRakoto) {
+    public static Player guardian() {
+        return Player.builder()
+            .id(10)
+            .name("Navas")
+            .isGuardian(true)
+            .build();
+    }
+
+    public static app.foot.model.PlayerScorer rakotoModelScorer(
+        app.foot.model.Player playerModelRakoto, PlayerScoreEntity scorerRakoto) {
         return app.foot.model.PlayerScorer.builder()
-                .player(playerModelRakoto)
-                .isOwnGoal(false)
-                .minute(scorerRakoto.getMinute())
-                .build();
+            .player(playerModelRakoto)
+            .isOwnGoal(false)
+            .minute(scorerRakoto.getMinute())
+            .build();
     }
 
     public static Team teamModelGhana(TeamEntity teamEntityGhana) {
@@ -100,5 +122,11 @@ public class TestUtils {
     public static void assertThrowsExceptionMessage(String message, Class exceptionClass, Executable executable) {
         Throwable exception = assertThrows(exceptionClass, executable);
         assertEquals(message, exception.getMessage());
+    }
+
+    public static <T> T convertHttpResponse(Class<T> generiType, MockHttpServletResponse response)
+        throws UnsupportedEncodingException, JsonProcessingException {
+        return new ObjectMapper().findAndRegisterModules()
+            .readValue(response.getContentAsString(), generiType);
     }
 }
