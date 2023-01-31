@@ -1,5 +1,6 @@
 package unit;
 
+import app.foot.exception.NotFoundException;
 import app.foot.model.Player;
 import app.foot.model.PlayerScorer;
 import app.foot.repository.MatchRepository;
@@ -73,7 +74,7 @@ public class PlayerMapperTest {
         when(teamRepositoryMock.findByName(any(String.class))).thenThrow(NotFoundException.class);
 
         assertThrowsExceptionMessage("",
-            NotFoundException.class, () -> subject.toEntity());
+            NotFoundException.class, () -> subject.toEntity(null));
     }
 
     @Test

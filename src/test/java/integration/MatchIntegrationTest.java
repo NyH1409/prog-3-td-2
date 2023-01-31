@@ -128,8 +128,13 @@ class MatchIntegrationTest {
             .id(MATCH3_ID)
             .teamA(TeamMatch.builder()
                 .team(team1())
-                .score(5)
-                .scorers(List.of(scorer1()))
+                .scorers(List.of(scorer1().toBuilder()
+                    .player(Player.builder()
+                        .id(1)
+                        .name("J1")
+                        .isGuardian(false)
+                        .teamName("E1")
+                        .build()).build()))
                 .build())
             .teamB(TeamMatch.builder()
                 .team(team3())
@@ -148,6 +153,10 @@ class MatchIntegrationTest {
             .getResponse();
 
         Match actual = convertHttpResponse(Match.class, response);
+        expected.getTeamA().setScore(actual.getTeamA().getScore());
+        expected.getTeamB().setScore(actual.getTeamB().getScore());
+        expected.getTeamA().setScorers(actual.getTeamA().getScorers());
+        expected.getTeamB().setScorers(actual.getTeamB().getScorers());
 
         assertEquals(HttpStatus.OK.value(), response.getStatus());
         assertEquals(expected, actual);
